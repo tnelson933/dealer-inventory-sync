@@ -84,7 +84,8 @@ begin
     Exit;
   end;
 
-  if (not TryStrToInt(Trim(SettingsPage.Values[1]), DealerId)) or (DealerId < 1) then
+  DealerId := StrToIntDef(Trim(SettingsPage.Values[1]), 0);
+  if DealerId < 1 then
   begin
     MsgBox('Enter a valid positive Dealer ID.', mbError, MB_OK);
     Result := False;
