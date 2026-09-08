@@ -1,0 +1,8 @@
+config.json
+dealer_sync.log*
+dealer_sync_state.json*
+.venv/
+build/
+dist/
+*.spec
+__pycache__/
