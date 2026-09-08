@@ -1,0 +1,51 @@
+name: Build Windows installer
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Verify Python source
+        run: python -m py_compile dealer_sync_agent.py
+
+      - name: Build background executable
+        run: pyinstaller --clean --onefile --noconsole --name DealerInventorySync dealer_sync_agent.py
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer\DealerInventorySync.iss'
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DealerInventorySync-Windows
+          path: release/DealerInventorySync-Setup.exe
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${env:GITHUB_REF_NAME}" "release/DealerInventorySync-Setup.exe" --title "Dealer Inventory Sync ${env:GITHUB_REF_NAME}" --generate-notes
