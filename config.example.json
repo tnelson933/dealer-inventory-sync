@@ -1,0 +1,15 @@
+{
+  "watch_folder": "C:\\DealerInventory\\Exports",
+  "api_url": "https://[my-replit-app].replit.app/api/upload",
+  "api_key": "replace-with-dealer-api-key",
+  "dealer_id": 1,
+  "fallback_interval_minutes": 15,
+  "settings_poll_interval_minutes": 5,
+  "log_file": "dealer_sync.log",
+  "state_file": "dealer_sync_state.json",
+  "request_timeout_seconds": 60,
+  "retry_attempts": 5,
+  "retry_base_delay_seconds": 5,
+  "file_stability_checks": 3,
+  "file_stability_delay_seconds": 2
+}
